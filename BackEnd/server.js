@@ -3,7 +3,7 @@ const path= require('path');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
-const {MongoClient} = require('mongodb')
+const {MongoClient,FindCursor,ListCollectionsCursor} = require('mongodb')
 
 const puerto=3001;
 
@@ -18,6 +18,16 @@ var urlencodedParser = bodyParser.urlencoded({extended:true})
 app.use(urlencodedParser);
 app.use(jsonParser);
 
+var jugadores = [];
+var entrenadores = [];
+var arbitros = [];
+var equipos = [];
+var partidos = [];
+var juegaens = [];
+var entrenaas = [];
+var jugadorxpartido = [];
+var arbitroxpartido = [];
+
 mongoose.connect("mongodb+srv://felixomardominguez847:contra847@cluster0.jqlttgs.mongodb.net/",{
     useNewUrlParser: true,
     useUnifiedTopology: true
@@ -30,70 +40,7 @@ mongoose.connect("mongodb+srv://felixomardominguez847:contra847@cluster0.jqlttgs
 
 var db = mongoose.connection;
 
-//solo descomentar al meter las posiciones de todos los jugadores de un equipo en un partido
- 
-// db.on('error', console.error.bind(console, 'connection error:'));
- 
-// db.once('open', function() {
-//     console.log("Connection Successful!");
- 
-//     // documents array
-//     var books = [{ IDJugador: '6487f02796fe743eb65d09a8', IDPartido: '648a988f0569766a09f917c7', Alineacion: 'Inicial' },
-//     { IDJugador: '6487f03a96fe743eb65d09aa', IDPartido: '648a988f0569766a09f917c7', Alineacion: 'Inicial' },
-//     { IDJugador: '6487f05596fe743eb65d09ac', IDPartido: '648a988f0569766a09f917c7', Alineacion: 'Inicial' },
-//     { IDJugador: '6487f06c96fe743eb65d09ae', IDPartido: '648a988f0569766a09f917c7', Alineacion: 'Inicial' },
-//     { IDJugador: '6487f0bb96fe743eb65d09b0', IDPartido: '648a988f0569766a09f917c7', Alineacion: 'Inicial' },
-//     { IDJugador: '6487f0cd96fe743eb65d09b2', IDPartido: '648a988f0569766a09f917c7', Alineacion: 'Inicial' },
-//     { IDJugador: '6487f0e296fe743eb65d09b4', IDPartido: '648a988f0569766a09f917c7', Alineacion: 'Inicial' },
-//     { IDJugador: '6487f0ff96fe743eb65d09b6', IDPartido: '648a988f0569766a09f917c7', Alineacion: 'Inicial' },
-//     { IDJugador: '6487f11796fe743eb65d09b8', IDPartido: '648a988f0569766a09f917c7', Alineacion: 'Inicial' },
-//     { IDJugador: '6487f13296fe743eb65d09ba', IDPartido: '648a988f0569766a09f917c7', Alineacion: 'Inicial' },
-//     { IDJugador: '6487f14996fe743eb65d09bc', IDPartido: '648a988f0569766a09f917c7', Alineacion: 'Inicial' },
-//     { IDJugador: '6487f15e96fe743eb65d09be', IDPartido: '648a988f0569766a09f917c7', Alineacion: 'Reserva' },
-//     { IDJugador: '6487f17c96fe743eb65d09c0', IDPartido: '648a988f0569766a09f917c7', Alineacion: 'Reserva' },
-//     { IDJugador: '6487f19196fe743eb65d09c2', IDPartido: '648a988f0569766a09f917c7', Alineacion: 'Reserva' },
-//     { IDJugador: '6487f1aa96fe743eb65d09c4', IDPartido: '648a988f0569766a09f917c7', Alineacion: 'Reserva' },
-//     { IDJugador: '6487f1c296fe743eb65d09c6', IDPartido: '648a988f0569766a09f917c7', Alineacion: 'Reserva' },
-//     ];  
- 
-//     // save multiple documents to the collection referenced by Book Model
-//     modelMongoJugadorXPartido.collection.insertMany(books, function (err, docs) {
-//       if (err){ 
-//           return console.error(err);
-//       } else {
-//         console.log("Multiple documents inserted to Collection");
-//       }
-//     });
-     
-// });
-
-//solo descomentar al meter los roles de todos los arbitros en un partido
-
-// db.on('error', console.error.bind(console, 'connection error:'));
- 
-// db.once('open', function() {
-//     console.log("Connection Successful!");
- 
-//     // documents array
-//     var books = [{ IDArbitro: '6487f8bed2b3ae7e06a78984', IDPartido: '648a988f0569766a09f917c7', Rol: 'Principal' },
-//     { IDArbitro: '6487f8d1d2b3ae7e06a78986', IDPartido: '648a988f0569766a09f917c7', Rol: 'Auxiliar' },
-//     { IDArbitro: '6487f8f5d2b3ae7e06a78988', IDPartido: '648a988f0569766a09f917c7', Rol: 'Auxiliar' },
-//     { IDArbitro: '6487f905d2b3ae7e06a7898a', IDPartido: '648a988f0569766a09f917c7', Rol: 'Reserva' },
-//     ];  
-   
- 
-//     // save multiple documents to the collection referenced by Book Model
-//     modelMongoArbitroXPartido.collection.insertMany(books, function (err, docs) {
-//       if (err){ 
-//           return console.error(err);
-//       } else {
-//         console.log("Multiple documents inserted to Collection");
-//       }
-//     });
-     
-// });
-
-
+db.on('error', console.error.bind(console, 'connection error:'));
 
 const JugadorSchema={
     Nombre: String,
@@ -323,11 +270,11 @@ app.post("/createJugadorXPartido",async (req,res) =>{
     })
 })
 
-app.post("/createJugadorXPartidoMultiple",async (req,res) =>{
-    var books = [{ IDJugador: 'Hola', IDPartido: '', Alineacion: '' },
-                    { IDJugador: 'Adios', IDPartido: '', Alineacion: '' }];
-    const data = new modelMongoJugadorXPartido({
-        books
+app.post("/createArbitroXPartido",async (req,res) =>{
+    const data = new modelMongoArbitroXPartido({
+        IDArbitro: req.body.IDArbitro,
+        IDPartido: req.body.IDPartido,
+        Rol: req.bodyRol
     })
     const value = await data.save()
     res.status(200).send({
@@ -336,14 +283,118 @@ app.post("/createJugadorXPartidoMultiple",async (req,res) =>{
     })
 })
 
-app.get("/getPartidos",(req,res)=>{
+app.post("/createMultipleJugadorXPartido",async (req,res) =>{
+    console.log("Connection Successful!");
+
+    var books = [{ IDJugador: '6487f02796fe743eb65d09a8', IDPartido: '648a988f0569766a09f917c7', Alineacion: 'Inicial' },
+    { IDJugador: '6487f03a96fe743eb65d09aa', IDPartido: '648a988f0569766a09f917c7', Alineacion: 'Inicial' },
+    { IDJugador: '6487f05596fe743eb65d09ac', IDPartido: '648a988f0569766a09f917c7', Alineacion: 'Inicial' },
+    { IDJugador: '6487f06c96fe743eb65d09ae', IDPartido: '648a988f0569766a09f917c7', Alineacion: 'Inicial' },
+    { IDJugador: '6487f0bb96fe743eb65d09b0', IDPartido: '648a988f0569766a09f917c7', Alineacion: 'Inicial' },
+    { IDJugador: '6487f0cd96fe743eb65d09b2', IDPartido: '648a988f0569766a09f917c7', Alineacion: 'Inicial' },
+    { IDJugador: '6487f0e296fe743eb65d09b4', IDPartido: '648a988f0569766a09f917c7', Alineacion: 'Inicial' },
+    { IDJugador: '6487f0ff96fe743eb65d09b6', IDPartido: '648a988f0569766a09f917c7', Alineacion: 'Inicial' },
+    { IDJugador: '6487f11796fe743eb65d09b8', IDPartido: '648a988f0569766a09f917c7', Alineacion: 'Inicial' },
+    { IDJugador: '6487f13296fe743eb65d09ba', IDPartido: '648a988f0569766a09f917c7', Alineacion: 'Inicial' },
+    { IDJugador: '6487f14996fe743eb65d09bc', IDPartido: '648a988f0569766a09f917c7', Alineacion: 'Inicial' },
+    { IDJugador: '6487f15e96fe743eb65d09be', IDPartido: '648a988f0569766a09f917c7', Alineacion: 'Reserva' },
+    { IDJugador: '6487f17c96fe743eb65d09c0', IDPartido: '648a988f0569766a09f917c7', Alineacion: 'Reserva' },
+    { IDJugador: '6487f19196fe743eb65d09c2', IDPartido: '648a988f0569766a09f917c7', Alineacion: 'Reserva' },
+    { IDJugador: '6487f1aa96fe743eb65d09c4', IDPartido: '648a988f0569766a09f917c7', Alineacion: 'Reserva' },
+    { IDJugador: '6487f1c296fe743eb65d09c6', IDPartido: '648a988f0569766a09f917c7', Alineacion: 'Reserva' },
+    ];  
+
+    modelMongoJugadorXPartido.collection.insertMany(books, function (err, docs) {
+      if (err){ 
+          return console.error(err);
+      } else {
+        console.log("Multiple documents inserted to Collection");
+      }
+    });
+})
+
+app.post("/createMultipleArbitroXPartido",async (req,res) =>{
+    console.log("Connection Successful!");
+ 
+    var books = [{ IDArbitro: '6487f8bed2b3ae7e06a78984', IDPartido: '648a988f0569766a09f917c7', Rol: 'Principal' },
+    { IDArbitro: '6487f8d1d2b3ae7e06a78986', IDPartido: '648a988f0569766a09f917c7', Rol: 'Auxiliar' },
+    { IDArbitro: '6487f8f5d2b3ae7e06a78988', IDPartido: '648a988f0569766a09f917c7', Rol: 'Auxiliar' },
+    { IDArbitro: '6487f905d2b3ae7e06a7898a', IDPartido: '648a988f0569766a09f917c7', Rol: 'Reserva' },
+    ];  
+   
+    modelMongoArbitroXPartido.collection.insertMany(books, function (err, docs) {
+      if (err){ 
+          return console.error(err);
+      } else {
+        console.log("Multiple documents inserted to Collection");
+      }
+    });
+})
+
+app.get("/Simular",(req,res)=>{
     modelMongoPartido.find().then((data)=>{
-        res.status(200).send({
-            "data":data
-        })
+        partidos = data;
+        // console.log(partidos[0].IDLocal);
+        // console.log(partidos[0].IDVisitante);
+        // console.log(partidos[0].Fecha);
+        // console.log(partidos[0]._id.valueOf());
+
     }).catch((err) =>{
-        res.status(500).send({
-            "info":err
-        })
+        console.log(err);
+    })
+
+    modelMongoJugador.find().then((data)=>{
+        jugadores = data;       
+    }).catch((err) =>{
+        console.log(err);
+    })
+
+    modelMongoEntrenador.find().then((data)=>{
+        entrenadores = data;       
+    }).catch((err) =>{
+        console.log(err);
+    })
+
+    modelMongoArbitro.find().then((data)=>{
+        arbitros = data;       
+    }).catch((err) =>{
+        console.log(err);
+    })
+
+    modelMongoEquipo.find().then((data)=>{
+        equipos = data;       
+    }).catch((err) =>{
+        console.log(err);
+    })
+
+    modelMongoJuegaEn.find().then((data)=>{
+        juegaens = data;       
+    }).catch((err) =>{
+        console.log(err);
+    })
+
+    modelMongoEntrenaA.find().then((data)=>{
+        entrenaas = data;       
+    }).catch((err) =>{
+        console.log(err);
+    })
+
+    modelMongoJugadorXPartido.find().then((data)=>{
+        jugadorxpartido = data;       
+    }).catch((err) =>{
+        console.log(err);
+    })
+
+    modelMongoArbitroXPartido.find().then((data)=>{
+        arbitroxpartido = data;       
+    }).catch((err) =>{
+        console.log(err);
+    })
+
+    res.status(200).send({
+        "msg":"creado existosamente",
+        "data":":D"
     })
 })
+
+
