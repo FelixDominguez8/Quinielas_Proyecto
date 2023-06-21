@@ -27,6 +27,12 @@ var juegaens = [];
 var entrenaas = [];
 var jugadorxpartido = [];
 var arbitroxpartido = [];
+var resultadolocal = [];
+var resultadovisitante = [];
+var partidosxquinielas = ['648a96060569766a09f917ab','648a96250569766a09f917ad','648a964b0569766a09f917af','648a96960569766a09f917b1',
+'648a96c70569766a09f917b3','648a96e50569766a09f917b5','648a97420569766a09f917b7','648a97660569766a09f917b9','648a97860569766a09f917bb',
+'648a97cd0569766a09f917bd','648a97f30569766a09f917bf','648a98110569766a09f917c1','648a984c0569766a09f917c3','648a986c0569766a09f917c5',
+'648a988f0569766a09f917c7'];
 
 mongoose.connect("mongodb+srv://felixomardominguez847:contra847@cluster0.jqlttgs.mongodb.net/",{
     useNewUrlParser: true,
@@ -331,20 +337,16 @@ app.post("/createMultipleArbitroXPartido",async (req,res) =>{
     });
 })
 
-app.get("/Simular",(req,res)=>{
+app.get("/CargarDatos",(req,res)=>{
+
     modelMongoPartido.find().then((data)=>{
         partidos = data;
-        // console.log(partidos[0].IDLocal);
-        // console.log(partidos[0].IDVisitante);
-        // console.log(partidos[0].Fecha);
-        // console.log(partidos[0]._id.valueOf());
-
     }).catch((err) =>{
         console.log(err);
     })
 
     modelMongoJugador.find().then((data)=>{
-        jugadores = data;       
+        jugadores = data;    
     }).catch((err) =>{
         console.log(err);
     })
@@ -398,3 +400,156 @@ app.get("/Simular",(req,res)=>{
 })
 
 
+app.get("/Simulacion",(req,res)=>{
+    for(var i=0; i<partidos.length; i++){
+        var totalequipolocal = 0;
+        var totalequipovisitante = 0;
+
+        var totaljugadoreslocal = 0;
+        for(var a=0; a<equipos.length; a++){
+            if(equipos[a]._id.valueOf() == partidos[i].IDLocal){
+                for(var b=0;b < juegaens.length; b++){
+                    if(juegaens[b].IDEquipo == equipos[a]._id.valueOf()){
+                        for(var c=0;c < jugadores.length; c++){
+                            if(jugadores[c]._id.valueOf() == juegaens[b].IDJugador){
+                                for(var d=0;d < jugadorxpartido.length; d++){
+                                    if((jugadores[c]._id.valueOf() == jugadorxpartido[d].IDJugador) && (partidos[i]._id.valueOf() == jugadorxpartido[d].IDPartido)){
+                                        var bioritmo = 0;
+                                        let difference = partidos[i].Fecha.getTime() - jugadores[c].Nacimiento.getTime();
+                                        let TotalDays = Math.ceil(difference / (1000 * 3600 * 24));
+                                        TotalDays = TotalDays - 1;
+                                        let fisico = Math.sin((2*Math.PI*TotalDays)/23);
+                                        let emocional = Math.sin((2*Math.PI*TotalDays)/28);
+                                        let intelectual = Math.sin((2*Math.PI*TotalDays)/33);
+                                        bioritmo = fisico + emocional + intelectual;
+                                        
+                                        if(jugadorxpartido[d].Alineacion == "Inicial"){
+                                            bioritmo = bioritmo * 4;
+                                        }else{
+                                            bioritmo = bioritmo * 2;
+                                        }
+                                        totaljugadoreslocal = totaljugadoreslocal + bioritmo;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        var totaljugadoresvisitante = 0;
+        for(var a=0; a<equipos.length; a++){
+            if(equipos[a]._id.valueOf() == partidos[i].IDVisitante){
+                for(var b=0;b < juegaens.length; b++){
+                    if(juegaens[b].IDEquipo == equipos[a]._id.valueOf()){
+                        for(var c=0;c < jugadores.length; c++){
+                            if(jugadores[c]._id.valueOf() == juegaens[b].IDJugador){
+                                for(var d=0;d < jugadorxpartido.length; d++){
+                                    if((jugadores[c]._id.valueOf() == jugadorxpartido[d].IDJugador) && (partidos[i]._id.valueOf() == jugadorxpartido[d].IDPartido)){
+                                        var bioritmo = 0;
+                                        let difference = partidos[i].Fecha.getTime() - jugadores[c].Nacimiento.getTime();
+                                        let TotalDays = Math.ceil(difference / (1000 * 3600 * 24));
+                                        TotalDays = TotalDays - 1;
+                                        let fisico = Math.sin((2*Math.PI*TotalDays)/23);
+                                        let emocional = Math.sin((2*Math.PI*TotalDays)/28);
+                                        let intelectual = Math.sin((2*Math.PI*TotalDays)/33);
+                                        bioritmo = fisico + emocional + intelectual;
+                                        
+                                        if(jugadorxpartido[d].Alineacion == "Inicial"){
+                                            bioritmo = bioritmo * 4;
+                                        }else{
+                                            bioritmo = bioritmo * 2;
+                                        }
+                                        totaljugadoresvisitante = totaljugadoresvisitante + bioritmo;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        var totalentrenadorlocal = 0;
+        for(var a=0; a<equipos.length; a++){
+            if(equipos[a]._id.valueOf() == partidos[i].IDLocal){
+                for(var b=0; b<entrenaas.length; b++){
+                    if(entrenaas[b].IDEquipo == equipos[a]._id.valueOf()){
+                        for(var c=0; c<entrenadores.length; c++){
+                            if(entrenadores[c]._id.valueOf() == entrenaas[b].IDEntrenador){
+                                var bioritmo = 0;
+                                let difference = partidos[i].Fecha.getTime() - entrenadores[c].Nacimiento.getTime();
+                                let TotalDays = Math.ceil(difference / (1000 * 3600 * 24));
+                                TotalDays = TotalDays - 1;
+                                let fisico = Math.sin((2*Math.PI*TotalDays)/23);
+                                let emocional = Math.sin((2*Math.PI*TotalDays)/28);
+                                let intelectual = Math.sin((2*Math.PI*TotalDays)/33);
+                                bioritmo = fisico + emocional + intelectual;
+                                bioritmo = bioritmo*5
+                                totalentrenadorlocal = totalentrenadorlocal + bioritmo;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        var totalentrenadorvisitante = 0;
+        for(var a=0; a<equipos.length; a++){
+            if(equipos[a]._id.valueOf() == partidos[i].IDVisitante){
+                for(var b=0; b<entrenaas.length; b++){
+                    if(entrenaas[b].IDEquipo == equipos[a]._id.valueOf()){
+                        for(var c=0; c<entrenadores.length; c++){
+                            if(entrenadores[c]._id.valueOf() == entrenaas[b].IDEntrenador){
+                                var bioritmo = 0;
+                                let difference = partidos[i].Fecha.getTime() - entrenadores[c].Nacimiento.getTime();
+                                let TotalDays = Math.ceil(difference / (1000 * 3600 * 24));
+                                TotalDays = TotalDays - 1;
+                                let fisico = Math.sin((2*Math.PI*TotalDays)/23);
+                                let emocional = Math.sin((2*Math.PI*TotalDays)/28);
+                                let intelectual = Math.sin((2*Math.PI*TotalDays)/33);
+                                bioritmo = fisico + emocional + intelectual;
+                                bioritmo = bioritmo*5
+                                totalentrenadorvisitante = totalentrenadorvisitante + bioritmo;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        var totalarbitros = 0;
+        for(var a=0; a<arbitros.length; a++){
+            for(var b=0; b<arbitroxpartido.length; b++){
+                if((arbitroxpartido[b].IDArbitro == arbitros[a]._id.valueOf()) && (arbitroxpartido[b].IDPartido == partidos[i]._id.valueOf())){
+                    var bioritmo = 0;
+                    let difference = partidos[i].Fecha.getTime() - arbitros[a].Nacimiento.getTime();
+                    let TotalDays = Math.ceil(difference / (1000 * 3600 * 24));
+                    TotalDays = TotalDays - 1;
+                    let fisico = Math.sin((2*Math.PI*TotalDays)/23);
+                    let emocional = Math.sin((2*Math.PI*TotalDays)/28);
+                    let intelectual = Math.sin((2*Math.PI*TotalDays)/33);
+                    bioritmo = fisico + emocional + intelectual;
+                    if(arbitroxpartido[b].Rol == "Principal"){
+                        bioritmo = bioritmo * 5;
+                    }else if(arbitroxpartido[b].Rol == "Auxiliar"){
+                        bioritmo = bioritmo * 3;
+                    }
+                    totalarbitros = totalarbitros + bioritmo;
+                }
+            }
+        }
+        totalequipolocal = totaljugadoreslocal + totalentrenadorlocal + totalarbitros;
+        totalequipovisitante = totaljugadoresvisitante + totalentrenadorvisitante + totalarbitros;
+        resultadolocal.push(totalequipolocal);
+        resultadovisitante.push(totalequipovisitante);
+        console.log(totalequipolocal);
+        console.log(totalequipovisitante);
+    }
+    
+    res.status(200).send({
+        "msg":"creado existosamente",
+        "data":":D"
+    })
+})
