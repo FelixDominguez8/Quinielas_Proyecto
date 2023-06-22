@@ -14,6 +14,7 @@
 }
 
 .table-container {
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -34,10 +35,11 @@ th, td {
 
 .popup-content {
   position: absolute;
+  top: 0;
+  left: 100%;
   display: none;
   color: #282c34;
   background-color: whitesmoke;
   border: 1px solid #ccc;
   padding: 10px;
-  /* Estilos adicionales para la apariencia de la ventana emergente */
 }
