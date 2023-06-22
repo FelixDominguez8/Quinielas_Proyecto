@@ -566,6 +566,21 @@ app.get("/SendVisitante",(req,res)=>{
     res.send(resultadovisitante)
 })
 
+app.get("/Ganadores",(req,res)=>{
+    var ganadores = []
+    for(var i=0; i<resultadolocal.length; i++){
+        if(resultadolocal[i] > resultadovisitante[i]){
+            ganadores.push("1")
+        }else if(resultadolocal[i] < resultadovisitante[i]){
+            ganadores.push("2")
+        }else if(resultadolocal[i] == resultadovisitante[i]){
+            ganadores.push("X")
+        }
+    }
+    console.log(ganadores)
+    res.send(ganadores)
+})
+
 app.get("/SendPartidosFechas",(req,res)=>{
     var fechaspartidos = [];
     for(var i=0; i < partidos.length; i++){
@@ -611,6 +626,5 @@ app.get("/SendPartidosNombres",(req,res)=>{
         var a = clublocal[i] + " vs "+ clubvisitante[i];
         encuentros.push(a);
     }
-    console.log(encuentros)
     res.send(encuentros)
 })

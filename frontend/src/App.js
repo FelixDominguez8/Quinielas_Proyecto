@@ -1,9 +1,39 @@
 import './App.css';
 import React, { useEffect, useState } from 'react';
 
+const sendGanadoresRes = await fetch('/Ganadores');
+const sendGanadoresData = await sendGanadoresRes.json();
+
+var indexes = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]
+
 function App() {
   const [datos, setDatos] = useState([]);
   const [popupPosition, setPopupPosition] = useState({ x: 0, y: 0 });
+  const [popupPosition2, setPopupPosition2] = useState({ x: 0, y: 0 });
+
+  const Resultados = (event) => {
+      var cont = 0;
+      for(var i=0;i<indexes.length;i++){
+        var e = document.getElementById("opcion"+indexes[i])
+        var text = e.options[e.selectedIndex].text;
+        console.log(text);
+        console.log(sendGanadoresData[i])
+        if(text == sendGanadoresData[i]){
+          cont++
+        }
+        
+      }
+      console.log(cont);
+      if(cont == indexes.length){
+        var text = "ganastes";
+        mostrarResultados2(event, text);
+        return(console.log("ganastes"))
+      }else{
+        var text = "perdistes";
+        mostrarResultados2(event, text);
+        return(console.log("perdistes"))
+      }
+  }
 
   useEffect(() => {
     const fetchData = async () => {
@@ -57,6 +87,19 @@ function App() {
     event.stopPropagation();
   };
 
+  const mostrarResultados2 = (event, text) => {
+    const popupContent = document.getElementById('popup-content2');
+
+    popupContent.innerHTML = text;
+    popupContent.style.display = 'block';
+
+    // Actualizar la posición del popup según las coordenadas del evento
+    setPopupPosition2({ x: event.clientX, y: event.clientY });
+
+    // Prevenir la propagación del evento para evitar que se cierre automáticamente el popup
+    event.stopPropagation();
+  };
+
   useEffect(() => {
     const closePopup = () => {
       const popupContent = document.getElementById('popup-content');
@@ -69,6 +112,21 @@ function App() {
     // Limpiar el evento de clic al desmontar el componente
     return () => {
       document.removeEventListener('click', closePopup);
+    };
+  }, []);
+
+  useEffect(() => {
+    const closePopup2 = () => {
+      const popupContent = document.getElementById('popup-content2');
+      popupContent.style.display = 'none';
+    };
+
+    // Agregar el evento de clic al documento para cerrar el popup
+    document.addEventListener('click', closePopup2);
+
+    // Limpiar el evento de clic al desmontar el componente
+    return () => {
+      document.removeEventListener('click', closePopup2);
     };
   }, []);
 
@@ -115,7 +173,7 @@ function App() {
                   <td id="partidos">{dato.partido}</td>
                   <td id="fechas">{dato.fecha}</td>
                   <td id="seleccion">
-                    <select name={`opcion${index + 1}`}>
+                    <select id={`opcion${index + 1}`}>
                       <option value="1">1</option>
                       <option value="X">X</option>
                       <option value="2">2</option>
@@ -131,10 +189,16 @@ function App() {
               
             </tbody>
           </table>
+          <p></p>
+          <button onClick={(event) =>  Resultados(event)}>Ver Resultados</button>
         </div>
       </body>
 
       <div id="popup-content" className="popup-content" style={{ top: popupPosition.y, left: popupPosition.x }}>
+        Aquí va la info de las probabilidades!!
+      </div>
+
+      <div id="popup-content2" className="popup-content" style={{ top: popupPosition2.y+270, left: popupPosition2.x-200 }}>
         Aquí va la info de las probabilidades!!
       </div>
     </div>
