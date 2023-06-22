@@ -1,4 +1,5 @@
 import './App.css';
+import icon from './icon.png';
 import React, { useEffect, useState } from 'react';
 
 const sendGanadoresRes = await fetch('/Ganadores');
@@ -9,8 +10,10 @@ var indexes = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]
 function App() {
   const [datos, setDatos] = useState([]);
   const [popupPosition, setPopupPosition] = useState({ x: 0, y: 0 });
-  const [popupPosition2, setPopupPosition2] = useState({ x: 0, y: 0 });
+  //const [popupPosition2, setPopupPosition2] = useState({ x: 0, y: 0 });
+  const [resultado, setResultado] = useState('');
 
+  //resultados de los biorritmos en la simulacion
   const Resultados = (event) => {
       var cont = 0;
       for(var i=0;i<indexes.length;i++){
@@ -18,23 +21,47 @@ function App() {
         var text = e.options[e.selectedIndex].text;
         console.log(text);
         console.log(sendGanadoresData[i])
-        if(text == sendGanadoresData[i]){
+        if(text === sendGanadoresData[i]){
           cont++
         }
-        
       }
+      var text;
       console.log(cont);
-      if(cont == indexes.length){
-        var text = "ganastes";
-        mostrarResultados2(event, text);
-        return(console.log("ganastes"))
-      }else{
-        var text = "perdistes";
-        mostrarResultados2(event, text);
-        return(console.log("perdistes"))
-      }
-  }
 
+      if (cont === indexes.length) {
+        setResultado('HAS GANADO!');
+        //mostrarResultados2(event, 'ganastes');
+        console.log('HAS GANADO!');
+      } else {
+        setResultado('HAS PERDIDO!');
+        //mostrarResultados2(event, 'HAS PERDIDO!');
+        console.log('HAS PERDIDO!');
+      }
+
+  };
+
+  //Animacion al presionar el boton de ver resultados
+  useEffect(() => {
+    if (resultado) {
+      const element = document.querySelector('.ganais-perdeis');
+      element.style.transform = 'translateY(100%)';
+      element.style.opacity = '1';
+
+      setTimeout(() => {
+        element.style.transform = 'translateY(0)';
+      }, 100);
+
+      setTimeout(() => {
+        element.style.opacity = '0';
+      }, 2000);
+
+      setTimeout(() => {
+        setResultado('');
+      }, 3500);
+    }
+  }, [resultado]);
+
+  //Gestion de Datos
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -80,14 +107,21 @@ function App() {
     popupContent.innerHTML = `Local: ${resultadoLocal}<br>Visitante: ${resultadoVisitante}`;
     popupContent.style.display = 'block';
 
-    // Actualizar la posición del popup según las coordenadas del evento
-    setPopupPosition({ x: event.clientX, y: event.clientY });
+    // Obtener las coordenadas del botón en relación con el viewport
+    const buttonRect = event.target.getBoundingClientRect();
+    const buttonTop = buttonRect.top + window.scrollY;
+    const buttonLeft = buttonRect.left + window.scrollX;
+
+    // Actualizar la posición del popup según las coordenadas del botón
+    const posX = buttonLeft + buttonRect.width / 2;
+    const posY = buttonTop - popupContent.offsetHeight;
+    setPopupPosition({ x: posX, y: posY });
 
     // Prevenir la propagación del evento para evitar que se cierre automáticamente el popup
     event.stopPropagation();
   };
 
-  const mostrarResultados2 = (event, text) => {
+  /*const mostrarResultados2 = (event, text) => {
     const popupContent = document.getElementById('popup-content2');
 
     popupContent.innerHTML = text;
@@ -98,8 +132,9 @@ function App() {
 
     // Prevenir la propagación del evento para evitar que se cierre automáticamente el popup
     event.stopPropagation();
-  };
+  };*/
 
+  //Efecto para el Primer Popup
   useEffect(() => {
     const closePopup = () => {
       const popupContent = document.getElementById('popup-content');
@@ -115,7 +150,7 @@ function App() {
     };
   }, []);
 
-  useEffect(() => {
+  /*useEffect(() => {
     const closePopup2 = () => {
       const popupContent = document.getElementById('popup-content2');
       popupContent.style.display = 'none';
@@ -128,29 +163,31 @@ function App() {
     return () => {
       document.removeEventListener('click', closePopup2);
     };
-  }, []);
+  }, []);*/
 
 
   return (
     <div className="App">
       <header className="App-header">
-        <h1>Super Quinielas!</h1>
+        <div className='Fondo'>
+          <h1>Super Quinielas!</h1>
+        </div>
       </header>
 
       <body>
-        <p>Buenas tardes</p>
+        <h2>*-*-* Bienvenid@ a las Super-Quinielas! *-*-*</h2>
         <div className="table-container">
           <table>
             <thead>
-              <tr>
+              <tr className='head-tabla'>
                 <th>Liga</th>
-                <th>Fecha</th>
+                <th>Jornada</th>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <td id="liga">Nacional</td>
-                <td id="fecha">22/06/2023</td>
+                <td id="liga">Liga de los Shogunes del Gol</td>
+                <td id="fecha">55</td>
               </tr>
             </tbody>
           </table>
@@ -159,7 +196,7 @@ function App() {
         <div className="table-container">
           <table>
             <thead>
-              <tr>
+              <tr className='head-tabla'>
                 <th>Partido</th>
                 <th>Fecha</th>
                 <th>1x2</th>
@@ -190,7 +227,7 @@ function App() {
             </tbody>
           </table>
           <p></p>
-          <button onClick={(event) =>  Resultados(event)}>Ver Resultados</button>
+          <button className='boton-resultados' onClick={(event) =>  Resultados(event)}>Ver Resultados</button>
         </div>
       </body>
 
@@ -198,8 +235,8 @@ function App() {
         Aquí va la info de las probabilidades!!
       </div>
 
-      <div id="popup-content2" className="popup-content" style={{ top: popupPosition2.y+270, left: popupPosition2.x-200 }}>
-        Aquí va la info de las probabilidades!!
+      <div className={`ganais-perdeis ${resultado ? 'show' : ''}`}>
+        {resultado && <span>{resultado}</span>}
       </div>
     </div>
   );
