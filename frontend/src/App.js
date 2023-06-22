@@ -1,5 +1,5 @@
 import './App.css';
-import { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 
 function App() {
   useEffect(() => {
@@ -33,6 +33,31 @@ function App() {
         popupContent.style.display = 'none';
       }
     });
+  }, []);
+
+  const [datos, setDatos] = useState([]);
+  useEffect(() => {
+    // Lógica para obtener los datos de la base de datos en Express
+    
+    const datosObtenidos = [
+      { partido: 'Partido 1', fecha: '2023-06-21' },
+      { partido: 'Partido 2', fecha: '2023-06-22' },
+      { partido: 'Partido 3', fecha: '2023-06-23' },
+      { partido: 'Partido 4', fecha: '2023-06-24' },
+      { partido: 'Partido 5', fecha: '2023-06-25' },
+      { partido: 'Partido 6', fecha: '2023-06-26' },
+      { partido: 'Partido 7', fecha: '2023-06-27' },
+      { partido: 'Partido 8', fecha: '2023-06-28' },
+      { partido: 'Partido 9', fecha: '2023-06-29' },
+      { partido: 'Partido 10', fecha: '2023-06-30' },
+      { partido: 'Partido 11', fecha: '2023-06-31' },
+      { partido: 'Partido 12', fecha: '2023-07-01' },
+      { partido: 'Partido 13', fecha: '2023-07-02' },
+      { partido: 'Partido 14', fecha: '2023-07-03' },
+      { partido: 'Partido 15', fecha: '2023-07-04' },
+    ];
+
+    setDatos(datosObtenidos);
   }, []);
 
   return (
@@ -74,220 +99,28 @@ function App() {
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td>Fila 1, Celda 1</td>
-                <td>Fila 1, Celda 2</td>
-                <td>
-                  <select name="opcion1">
-                    <option value="1">1</option>
-                    <option value="X">X</option>
-                    <option value="2">2</option>
-                  </select>
-                </td>
-                <td><button class="popup-button">%1 - %X - %2</button></td>
-              </tr>
-              <tr>
-                <td>Fila 2, Celda 1</td>
-                <td>Fila 2, Celda 2</td>
-                <td>
-                  <select name="opcion2">
-                    <option value="1">1</option>
-                    <option value="X">X</option>
-                    <option value="2">2</option>
-                  </select>
-                </td>
-                <td><button class="popup-button">%1 - %X - %2</button></td>
-              </tr>
-              <tr class="section-divider">
-                <td colspan="4"></td>
-              </tr>
-              <tr>
-                <td>Fila 3, Celda 1</td>
-                <td>Fila 3, Celda 2</td>
-                <td>
-                  <select name="opcion3">
-                    <option value="1">1</option>
-                    <option value="X">X</option>
-                    <option value="2">2</option>
-                  </select>
-                </td>
-                <td><button class="popup-button">%1 - %X - %2</button></td>
-              </tr>
-              <tr>
-                <td>Fila 4, Celda 1</td>
-                <td>Fila 4, Celda 2</td>
-                <td>
-                  <select name="opcion4">
-                    <option value="1">1</option>
-                    <option value="X">X</option>
-                    <option value="2">2</option>
-                  </select>
-                </td>
-                <td><button class="popup-button">%1 - %X - %2</button></td>
-              </tr>
-              <tr class="section-divider">
-                <td colspan="4"></td>
-              </tr>
-              <tr>
-                <td>Fila 5, Celda 1</td>
-                <td>Fila 5, Celda 2</td>
-                <td>
-                  <select name="opcion5">
-                    <option value="1">1</option>
-                    <option value="X">X</option>
-                    <option value="2">2</option>
-                  </select>
-                </td>
-                <td><button class="popup-button">%1 - %X - %2</button></td>
-              </tr>
-              <tr>
-                <td>Fila 6, Celda 1</td>
-                <td>Fila 6, Celda 2</td>
-                <td>
-                  <select name="opcion6">
-                    <option value="1">1</option>
-                    <option value="X">X</option>
-                    <option value="2">2</option>
-                  </select>
-                </td>
-                <td><button class="popup-button">%1 - %X - %2</button></td>
-              </tr>
-              <tr class="section-divider">
-                <td colspan="4"></td>
-              </tr>
-              <tr>
-                <td>Fila 7, Celda 1</td>
-                <td>Fila 7, Celda 2</td>
-                <td>
-                  <select name="opcion7">
-                    <option value="1">1</option>
-                    <option value="X">X</option>
-                    <option value="2">2</option>
-                  </select>
-                </td>
-                <td><button class="popup-button">%1 - %X - %2</button></td>
-              </tr>
-              <tr>
-                <td>Fila 8, Celda 1</td>
-                <td>Fila 8, Celda 2</td>
-                <td>
-                  <select name="opcion8">
-                    <option value="1">1</option>
-                    <option value="X">X</option>
-                    <option value="2">2</option>
-                  </select>
-                </td>
-                <td><button class="popup-button">%1 - %X - %2</button></td>
-              </tr>
-              <tr class="section-divider">
-                <td colspan="4"></td>
-              </tr>
-              <tr>
-                <td>Fila 9, Celda 1</td>
-                <td>Fila 9, Celda 2</td>
-                <td>
-                  <select name="opcion9">
-                    <option value="1">1</option>
-                    <option value="X">X</option>
-                    <option value="2">2</option>
-                  </select>
-                </td>
-                <td><button class="popup-button">%1 - %X - %2</button></td>
-              </tr>
-              <tr>
-                <td>Fila 10, Celda 1</td>
-                <td>Fila 10, Celda 2</td>
-                <td>
-                  <select name="opcion10">
-                    <option value="1">1</option>
-                    <option value="X">X</option>
-                    <option value="2">2</option>
-                  </select>
-                </td>
-                <td><button class="popup-button">%1 - %X - %2</button></td>
-              </tr>
-              <tr class="section-divider">
-                <td colspan="4"></td>
-              </tr>
-              <tr>
-                <td>Fila 11, Celda 1</td>
-                <td>Fila 11, Celda 2</td>
-                <td>
-                  <select name="opcion11">
-                    <option value="1">1</option>
-                    <option value="X">X</option>
-                    <option value="2">2</option>
-                  </select>
-                </td>
-                <td><button class="popup-button">%1 - %X - %2</button></td>
-              </tr>
-              <tr>
-                <td>Fila 12, Celda 1</td>
-                <td>Fila 12, Celda 2</td>
-                <td>
-                  <select name="opcion12">
-                    <option value="1">1</option>
-                    <option value="X">X</option>
-                    <option value="2">2</option>
-                  </select>
-                </td>
-                <td><button class="popup-button">%1 - %X - %2</button></td>
-              </tr>
-              <tr class="section-divider">
-                <td colspan="4"></td>
-              </tr>
-              <tr>
-                <td>Fila 13, Celda 1</td>
-                <td>Fila 13, Celda 2</td>
-                <td>
-                  <select name="opcion13">
-                    <option value="1">1</option>
-                    <option value="X">X</option>
-                    <option value="2">2</option>
-                  </select>
-                </td>
-                <td><button class="popup-button">%1 - %X - %2</button></td>
-              </tr>
-              <tr>
-                <td>Fila 14, Celda 1</td>
-                <td>Fila 14, Celda 2</td>
-                <td>
-                  <select name="opcion14">
-                    <option value="1">1</option>
-                    <option value="X">X</option>
-                    <option value="2">2</option>
-                  </select>
-                </td>
-                <td><button class="popup-button">%1 - %X - %2</button></td>
-              </tr>
-              <tr class="section-divider">
-                <td colspan="4"></td>
-              </tr>
-              <tr>
-                <td>Fila 15, Celda 1</td>
-                <td>Fila 15, Celda 2</td>
-                <td>
-                  <select name="opcion15">
-                    <option value="1">1</option>
-                    <option value="X">X</option>
-                    <option value="2">2</option>
-                  </select>
-                </td>
-                <td><button class="popup-button">%1 - %X - %2</button></td>
-              </tr>
-              <tr>
-                <td>Fila 16, Celda 1</td>
-                <td>Fila 16, Celda 2</td>
-                <td>
-                  <select name="opcion16">
-                    <option value="1">1</option>
-                    <option value="X">X</option>
-                    <option value="2">2</option>
-                  </select>
-                </td>
-                <td><button class="popup-button">%1 - %X - %2</button></td>
-              </tr>
+               
+                {datos.map((dato, index) => (
+                  <tr key={index}>
+
+                    <td>{dato.partido}</td>
+                    <td>{dato.fecha}</td>
+                    <td>
+                      <select name={`opcion${index + 1}`}>
+                        <option value="1">1</option>
+                        <option value="X">X</option>
+                        <option value="2">2</option>
+                      </select>
+                    </td>
+                    <td>
+                      <button className="popup-button">%1 - %X - %2</button>
+                    </td>
+
+                  </tr>
+                ))}
+              
             </tbody>
+            
             <div id="popup-content" class="popup-content">
               Aqui va la info de las probabilidades!!
             </div>
