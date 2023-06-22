@@ -1,7 +1,46 @@
 import './App.css';
 import React, { useEffect, useState } from 'react';
 
+var local = []
+var visitante = []
+var fechas = []
+
 function App() {
+  useEffect(()=>{
+    fetch("/CargarDatos")
+  }, [])
+
+  useEffect(()=>{
+    fetch("/Simulacion")
+  }, [])
+
+  const[data,setData] = useState({})
+
+  useEffect(()=>{
+    fetch("/SendLocal").then(res => res.json()).then(data => setData(data))
+    local = data
+  }, [])
+
+  const[data2,setData2] = useState({})
+
+  useEffect(()=>{
+    fetch("/SendVisitante").then(res => res.json()).then(data2 => setData2(data2))
+    visitante = data2
+  }, [])
+
+  const[data3,setData3] = useState({})
+
+  useEffect(()=>{
+    fetch("/SendPartidosFechas").then(res => res.json()).then(data3 => setData3(data3))
+    fechas = data3
+  }, [])
+
+  const[nombres,setData4] = useState({})
+
+  useEffect(()=>{
+    fetch("/SendPartidosNombres").then(res => res.json()).then(nombres => setData4(nombres))
+  }, [])
+
   useEffect(() => {
     var popupContent = document.getElementById('popup-content');
     var popupButtons = document.querySelectorAll('.popup-button');
@@ -40,21 +79,21 @@ function App() {
     // Lógica para obtener los datos de la base de datos en Express
     
     const datosObtenidos = [
-      { partido: 'Partido 1', fecha: '2023-06-21' },
-      { partido: 'Partido 2', fecha: '2023-06-22' },
-      { partido: 'Partido 3', fecha: '2023-06-23' },
-      { partido: 'Partido 4', fecha: '2023-06-24' },
-      { partido: 'Partido 5', fecha: '2023-06-25' },
-      { partido: 'Partido 6', fecha: '2023-06-26' },
-      { partido: 'Partido 7', fecha: '2023-06-27' },
-      { partido: 'Partido 8', fecha: '2023-06-28' },
-      { partido: 'Partido 9', fecha: '2023-06-29' },
-      { partido: 'Partido 10', fecha: '2023-06-30' },
-      { partido: 'Partido 11', fecha: '2023-06-31' },
-      { partido: 'Partido 12', fecha: '2023-07-01' },
-      { partido: 'Partido 13', fecha: '2023-07-02' },
-      { partido: 'Partido 14', fecha: '2023-07-03' },
-      { partido: 'Partido 15', fecha: '2023-07-04' },
+      { partido: nombres[0], fecha: fechas[0] },
+      { partido: nombres[1], fecha: fechas[1] },
+      { partido: nombres[2], fecha: fechas[2] },
+      { partido: nombres[3], fecha: fechas[3] },
+      { partido: nombres[4], fecha: fechas[4] },
+      { partido: nombres[5], fecha: fechas[5] },
+      { partido: nombres[6], fecha: fechas[6] },
+      { partido: nombres[7], fecha: fechas[7] },
+      { partido: nombres[8], fecha: fechas[8] },
+      { partido: nombres[9], fecha: fechas[9] },
+      { partido: nombres[10], fecha: fechas[10] },
+      { partido: nombres[11], fecha: fechas[11] },
+      { partido: nombres[12], fecha: fechas[12] },
+      { partido: nombres[13], fecha: fechas[13] },
+      { partido: nombres[14], fecha: fechas[14]},
     ];
 
     setDatos(datosObtenidos);
@@ -73,15 +112,13 @@ function App() {
             <thead>
               <tr>
                 <th>Liga</th>
-                <th>Jornada</th>
                 <th>Fecha</th>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <td id="liga">Siu</td>
-                <td id="jornada">68</td>
-                <td id="fecha">Ayer :P</td>
+                <td id="liga">Nacional</td>
+                <td id="fecha">22/06/2023</td>
               </tr>
             </tbody>
           </table>
@@ -99,28 +136,25 @@ function App() {
               </tr>
             </thead>
             <tbody>
-               
-                {datos.map((dato, index) => (
-                  <tr key={index}>
+              {datos.map((dato, index) => (
+                    <tr key={index}>
+                      <td>{dato.partido}</td>
+                      <td>{dato.fecha}</td>
+                      <td>
+                        <select name={`opcion${index + 1}`}>
+                          <option value="1">1</option>
+                          <option value="X">X</option>
+                          <option value="2">2</option>
+                        </select>
+                      </td>
+                      <td>
+                        <button className="popup-button">%1 - %X - %2</button>
+                      </td>
 
-                    <td>{dato.partido}</td>
-                    <td>{dato.fecha}</td>
-                    <td>
-                      <select name={`opcion${index + 1}`}>
-                        <option value="1">1</option>
-                        <option value="X">X</option>
-                        <option value="2">2</option>
-                      </select>
-                    </td>
-                    <td>
-                      <button className="popup-button">%1 - %X - %2</button>
-                    </td>
-
-                  </tr>
-                ))}
+                    </tr>
+                  ))}
               
             </tbody>
-            
             <div id="popup-content" class="popup-content">
               Aqui va la info de las probabilidades!!
             </div>

@@ -22,6 +22,7 @@ var jugadores = [];
 var entrenadores = [];
 var arbitros = [];
 var equipos = [];
+var clubs = [];
 var partidos = [];
 var juegaens = [];
 var entrenaas = [];
@@ -369,6 +370,12 @@ app.get("/CargarDatos",(req,res)=>{
         console.log(err);
     })
 
+    modelMongoClub.find().then((data)=>{
+        clubs = data;       
+    }).catch((err) =>{
+        console.log(err);
+    })
+
     modelMongoJuegaEn.find().then((data)=>{
         juegaens = data;       
     }).catch((err) =>{
@@ -559,10 +566,51 @@ app.get("/SendVisitante",(req,res)=>{
     res.send(resultadovisitante)
 })
 
-app.get("/SendPartidos",(req,res)=>{
-    res.status(200).send(partidos)
+app.get("/SendPartidosFechas",(req,res)=>{
+    var fechaspartidos = [];
+    for(var i=0; i < partidos.length; i++){
+        var dia = partidos[i].Fecha.getUTCDate();
+        var mes = partidos[i].Fecha.getUTCMonth();
+        var anyo = partidos[i].Fecha.getUTCFullYear();
+        var fecha = dia + "/" + mes + "/" + anyo;
+        fechaspartidos.push(fecha);
+    }
+    res.send(fechaspartidos)
 })
 
-app.get("/SendEquipos",(req,res)=>{
-    res.send(equipos)
+app.get("/SendPartidosNombres",(req,res)=>{
+    var clublocal = [];
+    var clubvisitante = [];
+    var encuentros = [];
+
+    for(var i=0; i < partidos.length; i++){
+        for(var j=0; j < equipos.length; j++){            
+            if(partidos[i].IDLocal == equipos[j]._id.valueOf()){
+                for(var z=0; z<clubs.length; z++){
+                    if(equipos[j].IDClub == clubs[z]._id.valueOf()){
+                        clublocal.push(clubs[z].Nombre)
+                    }
+                }
+            }
+        }
+    }
+
+    for(var i=0; i < partidos.length; i++){
+        for(var j=0; j < equipos.length; j++){
+            if(partidos[i].IDVisitante == equipos[j]._id.valueOf()){
+                for(var z=0; z<clubs.length; z++){
+                    if(equipos[j].IDClub == clubs[z]._id.valueOf()){
+                        clubvisitante.push(clubs[z].Nombre)
+                    }
+                }
+            }
+        }
+    }
+
+    for(var i=0; i < partidos.length; i++){
+        var a = clublocal[i] + " vs "+ clubvisitante[i];
+        encuentros.push(a);
+    }
+    console.log(encuentros)
+    res.send(encuentros)
 })
