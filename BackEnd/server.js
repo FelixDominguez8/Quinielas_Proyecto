@@ -338,7 +338,7 @@ app.post("/createMultipleArbitroXPartido",async (req,res) =>{
 })
 
 app.get("/CargarDatos",(req,res)=>{
-
+    console.log("No hecho ):");
     modelMongoPartido.find().then((data)=>{
         partidos = data;
     }).catch((err) =>{
@@ -404,7 +404,6 @@ app.get("/Simulacion",(req,res)=>{
     for(var i=0; i<partidos.length; i++){
         var totalequipolocal = 0;
         var totalequipovisitante = 0;
-
         var totaljugadoreslocal = 0;
         for(var a=0; a<equipos.length; a++){
             if(equipos[a]._id.valueOf() == partidos[i].IDLocal){
@@ -544,12 +543,26 @@ app.get("/Simulacion",(req,res)=>{
         totalequipovisitante = totaljugadoresvisitante + totalentrenadorvisitante + totalarbitros;
         resultadolocal.push(totalequipolocal);
         resultadovisitante.push(totalequipovisitante);
-        console.log(totalequipolocal);
-        console.log(totalequipovisitante);
     }
     
     res.status(200).send({
         "msg":"creado existosamente",
         "data":":D"
     })
+})
+
+app.get("/SendLocal",(req,res)=>{
+    res.send(resultadolocal)
+})
+
+app.get("/SendVisitante",(req,res)=>{
+    res.send(resultadovisitante)
+})
+
+app.get("/SendPartidos",(req,res)=>{
+    res.status(200).send(partidos)
+})
+
+app.get("/SendEquipos",(req,res)=>{
+    res.send(equipos)
 })

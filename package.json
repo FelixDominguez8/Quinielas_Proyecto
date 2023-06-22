@@ -1,11 +1,8 @@
 {
-  "name": "quinielas_proyecto",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
   "scripts": {
-    "start": "concurrently \"cd BackEnd && npm start\" \"cd frontend && npm start\""
+    "start": "concurrently \"node ./BackEnd/server.js\" \"cd frontend && npm start\""
   },
-  "author": "",
-  "license": "ISC"
+  "dependencies": {
+    "concurrently": "^8.2.0"
+  }
 }
