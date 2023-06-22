@@ -1,113 +1,64 @@
 import './App.css';
 import React, { useEffect, useState } from 'react';
 
-var local = []
-var visitante = []
-var fechas = []
-
 function App() {
-  useEffect(()=>{
-    fetch("/CargarDatos")
-  }, [])
-
-  useEffect(()=>{
-    fetch("/Simulacion")
-  }, [])
-
-  const[data,setData] = useState({})
-
-  useEffect(()=>{
-    fetch("/SendLocal").then(res => res.json()).then(data => setData(data))
-    local = data
-  }, [])
-
-  const[data2,setData2] = useState({})
-
-  useEffect(()=>{
-    fetch("/SendVisitante").then(res => res.json()).then(data2 => setData2(data2))
-    visitante = data2
-  }, [])
-
-  const[data3,setData3] = useState({})
-
-  useEffect(()=>{
-    fetch("/SendPartidosFechas").then(res => res.json()).then(data3 => setData3(data3))
-    fechas = data3
-  }, [])
-
-  const[nombres,setData4] = useState({})
-
-  useEffect(()=>{
-    fetch("/SendPartidosNombres").then(res => res.json()).then(nombres => setData4(nombres))
-  }, [])
-
-  useEffect(() => {
-    var popupContent = document.getElementById('popup-content');
-    var popupButtons = document.querySelectorAll('.popup-button');
-
-    popupButtons.forEach((button) => {
-      button.addEventListener('click', function(event) {
-        var mouseX = event.clientX;
-        var mouseY = event.clientY;
-    
-        var scrollX = window.pageXOffset || document.documentElement.scrollLeft;
-        var scrollY = window.pageYOffset || document.documentElement.scrollTop;
-    
-        var adjustedX = mouseX + scrollX;
-        var adjustedY = mouseY + scrollY;
-    
-        popupContent.style.display = 'block';
-        popupContent.style.top = adjustedY + 'px';
-        popupContent.style.left = adjustedX + 'px';
-      });
-    });
-
-    document.addEventListener('click', function(event) {
-      var target = event.target;
-  
-      var isButton = target.classList.contains('popup-button');
-      var isPopupContent = target.id === 'popup-content';
-  
-      if (!isButton && !isPopupContent) {
-        popupContent.style.display = 'none';
-      }
-    });
-  }, []);
-
   const [datos, setDatos] = useState([]);
-  useEffect(() => {
-    // Lógica para obtener los datos de la base de datos en Express
-    
-    const datosObtenidos = [
-      { partido: nombres[0], fecha: fechas[0] },
-      { partido: nombres[1], fecha: fechas[1] },
-      { partido: nombres[2], fecha: fechas[2] },
-      { partido: nombres[3], fecha: fechas[3] },
-      { partido: nombres[4], fecha: fechas[4] },
-      { partido: nombres[5], fecha: fechas[5] },
-      { partido: nombres[6], fecha: fechas[6] },
-      { partido: nombres[7], fecha: fechas[7] },
-      { partido: nombres[8], fecha: fechas[8] },
-      { partido: nombres[9], fecha: fechas[9] },
-      { partido: nombres[10], fecha: fechas[10] },
-      { partido: nombres[11], fecha: fechas[11] },
-      { partido: nombres[12], fecha: fechas[12] },
-      { partido: nombres[13], fecha: fechas[13] },
-      { partido: nombres[14], fecha: fechas[14]},
-    ];
 
-    setDatos(datosObtenidos);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        //Carga de Datos
+        const cargarDatosRes = await fetch('/CargarDatos');
+        const simulacionRes = await fetch('/Simulacion');
+        const sendLocalRes = await fetch('/SendLocal');
+        const sendVisitanteRes = await fetch('/SendVisitante');
+        const sendPartidosFechasRes = await fetch('/SendPartidosFechas');
+        const sendPartidosNombresRes = await fetch('/SendPartidosNombres');
+
+        //Asignacion de Datos
+        const cargarDatosData = await cargarDatosRes.json();
+        const simulacionData = await simulacionRes.json();
+        const sendLocalData = await sendLocalRes.json();
+        const sendVisitanteData = await sendVisitanteRes.json();
+        const sendPartidosFechasData = await sendPartidosFechasRes.json();
+        const sendPartidosNombresData = await sendPartidosNombresRes.json();
+
+        const datosObtenidos = [
+          { partido: sendPartidosNombresData[0], fecha: sendPartidosFechasData[0] },
+          { partido: sendPartidosNombresData[1], fecha: sendPartidosFechasData[1] },
+          { partido: sendPartidosNombresData[2], fecha: sendPartidosFechasData[2] },
+          { partido: sendPartidosNombresData[3], fecha: sendPartidosFechasData[3] },
+          { partido: sendPartidosNombresData[4], fecha: sendPartidosFechasData[4] },
+          { partido: sendPartidosNombresData[5], fecha: sendPartidosFechasData[5] },
+          { partido: sendPartidosNombresData[6], fecha: sendPartidosFechasData[6] },
+          { partido: sendPartidosNombresData[7], fecha: sendPartidosFechasData[7] },
+          { partido: sendPartidosNombresData[8], fecha: sendPartidosFechasData[8] },
+          { partido: sendPartidosNombresData[9], fecha: sendPartidosFechasData[9] },
+          { partido: sendPartidosNombresData[10], fecha: sendPartidosFechasData[10] },
+          { partido: sendPartidosNombresData[11], fecha: sendPartidosFechasData[11] },
+          { partido: sendPartidosNombresData[12], fecha: sendPartidosFechasData[12] },
+          { partido: sendPartidosNombresData[13], fecha: sendPartidosFechasData[13] },
+          { partido: sendPartidosNombresData[14], fecha: sendPartidosFechasData[14] },
+        ];
+
+        setDatos(datosObtenidos);
+      } catch (error) {
+        console.error('Error al cargar los datos:', error);
+      }
+    };
+
+    fetchData();
   }, []);
 
   return (
     <div className="App">
-      <header className="App-header">     
+      <header className="App-header">
         <h1>Super Quinielas!</h1>
       </header>
 
       <body>
         <p>Buenas tardes</p>
-        <div class="table-container">
+        <div className="table-container">
           <table>
             <thead>
               <tr>
@@ -124,9 +75,8 @@ function App() {
           </table>
         </div>
 
-        <div class="table-container">
+        <div className="table-container">
           <table>
-            
             <thead>
               <tr>
                 <th>Partido</th>
@@ -137,26 +87,24 @@ function App() {
             </thead>
             <tbody>
               {datos.map((dato, index) => (
-                    <tr key={index}>
-                      <td>{dato.partido}</td>
-                      <td>{dato.fecha}</td>
-                      <td>
-                        <select name={`opcion${index + 1}`}>
-                          <option value="1">1</option>
-                          <option value="X">X</option>
-                          <option value="2">2</option>
-                        </select>
-                      </td>
-                      <td>
-                        <button className="popup-button">%1 - %X - %2</button>
-                      </td>
-
-                    </tr>
-                  ))}
-              
+                <tr key={index}>
+                  <td id="partidos">{dato.partido}</td>
+                  <td id="fechas">{dato.fecha}</td>
+                  <td id="seleccion">
+                    <select name={`opcion${index + 1}`}>
+                      <option value="1">1</option>
+                      <option value="X">X</option>
+                      <option value="2">2</option>
+                    </select>
+                  </td>
+                  <td id="resultados">
+                    <button className="popup-button">%1 - %X - %2</button>
+                  </td>
+                </tr>
+              ))}
             </tbody>
-            <div id="popup-content" class="popup-content">
-              Aqui va la info de las probabilidades!!
+            <div id="popup-content" className="popup-content">
+              Aquí va la info de las probabilidades!!
             </div>
           </table>
         </div>
